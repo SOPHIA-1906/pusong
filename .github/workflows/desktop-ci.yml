@@ -25,3 +25,16 @@ jobs:
         run: npm install
       - name: Compile application
         run: npm run build
+      - name: Package desktop installer
+        if: matrix.os != 'ubuntu-latest'
+        run: npm run dist
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+      - name: Upload installer
+        if: matrix.os != 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pumi-installer-${{ matrix.os }}
+          path: release/*
+          if-no-files-found: error
+          retention-days: 14
